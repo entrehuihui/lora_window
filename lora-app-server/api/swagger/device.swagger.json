@@ -1,0 +1,1088 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "device.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/devices": {
+      "get": {
+        "summary": "List returns the available devices.",
+        "operationId": "List",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/apiListDeviceResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "description": "Max number of devices to return in the result-set.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "offset",
+            "description": "Offset in the result-set (for pagination).",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "application_id",
+            "description": "Application ID to filter on.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "search",
+            "description": "Search on name or DevEUI.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "multicast_group_id",
+            "description": "Multicast-group ID to filter on (string formatted UUID).",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "service_profile_id",
+            "description": "Service-profile ID to filter on (string formatted UUID).",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DeviceService"
+        ]
+      },
+      "post": {
+        "summary": "Create creates the given device.",
+        "operationId": "Create",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiCreateDeviceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DeviceService"
+        ]
+      }
+    },
+    "/api/devices/{dev_eui}": {
+      "get": {
+        "summary": "Get returns the device matching the given DevEUI.",
+        "operationId": "Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/apiGetDeviceResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "dev_eui",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DeviceService"
+        ]
+      },
+      "delete": {
+        "summary": "Delete deletes the device matching the given DevEUI.",
+        "operationId": "Delete",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "dev_eui",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DeviceService"
+        ]
+      }
+    },
+    "/api/devices/{dev_eui}/activation": {
+      "get": {
+        "summary": "GetActivation returns the current activation details of the device (OTAA and ABP).",
+        "operationId": "GetActivation",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/apiGetDeviceActivationResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "dev_eui",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DeviceService"
+        ]
+      },
+      "delete": {
+        "summary": "Deactivate de-activates the device.",
+        "operationId": "Deactivate",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "dev_eui",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DeviceService"
+        ]
+      }
+    },
+    "/api/devices/{dev_eui}/events": {
+      "get": {
+        "summary": "StreamEventLogs stream the device events (uplink payloads, ACKs, joins, errors).\n  * This endpoint is intended for debugging only.\n  * This endpoint does not work from a web-browser.",
+        "operationId": "StreamEventLogs",
+        "responses": {
+          "200": {
+            "description": "(streaming responses)",
+            "schema": {
+              "$ref": "#/definitions/apiStreamDeviceEventLogsResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "dev_eui",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DeviceService"
+        ]
+      }
+    },
+    "/api/devices/{dev_eui}/frames": {
+      "get": {
+        "summary": "StreamFrameLogs streams the uplink and downlink frame-logs for the given DevEUI.\n  * These are the raw LoRaWAN frames and this endpoint is intended for debugging only.\n  * This endpoint does not work from a web-browser.",
+        "operationId": "StreamFrameLogs",
+        "responses": {
+          "200": {
+            "description": "(streaming responses)",
+            "schema": {
+              "$ref": "#/definitions/apiStreamDeviceFrameLogsResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "dev_eui",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DeviceService"
+        ]
+      }
+    },
+    "/api/devices/{dev_eui}/getRandomDevAddr": {
+      "post": {
+        "summary": "GetRandomDevAddr returns a random DevAddr taking the NwkID prefix into account.",
+        "operationId": "GetRandomDevAddr",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/apiGetRandomDevAddrResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "dev_eui",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DeviceService"
+        ]
+      }
+    },
+    "/api/devices/{dev_eui}/keys": {
+      "get": {
+        "summary": "GetKeys returns the device-keys for the given DevEUI.",
+        "operationId": "GetKeys",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/apiGetDeviceKeysResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "dev_eui",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DeviceService"
+        ]
+      },
+      "delete": {
+        "summary": "DeleteKeys deletes the device-keys for the given DevEUI.",
+        "operationId": "DeleteKeys",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "dev_eui",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DeviceService"
+        ]
+      }
+    },
+    "/api/devices/{device.dev_eui}": {
+      "put": {
+        "summary": "Update updates the device matching the given DevEUI.",
+        "operationId": "Update",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "device.dev_eui",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiUpdateDeviceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DeviceService"
+        ]
+      }
+    },
+    "/api/devices/{device_activation.dev_eui}/activate": {
+      "post": {
+        "summary": "Activate (re)activates the device (only when ABP is set to true).",
+        "operationId": "Activate",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "device_activation.dev_eui",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiActivateDeviceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DeviceService"
+        ]
+      }
+    },
+    "/api/devices/{device_keys.dev_eui}/keys": {
+      "post": {
+        "summary": "CreateKeys creates the given device-keys.",
+        "operationId": "CreateKeys",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "device_keys.dev_eui",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiCreateDeviceKeysRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DeviceService"
+        ]
+      },
+      "put": {
+        "summary": "UpdateKeys updates the device-keys.",
+        "operationId": "UpdateKeys",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "device_keys.dev_eui",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiUpdateDeviceKeysRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DeviceService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "apiActivateDeviceRequest": {
+      "type": "object",
+      "properties": {
+        "device_activation": {
+          "$ref": "#/definitions/apiDeviceActivation"
+        }
+      }
+    },
+    "apiCreateDeviceKeysRequest": {
+      "type": "object",
+      "properties": {
+        "device_keys": {
+          "$ref": "#/definitions/apiDeviceKeys",
+          "description": "Device-keys object to create."
+        }
+      }
+    },
+    "apiCreateDeviceRequest": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "$ref": "#/definitions/apiDevice",
+          "description": "Device object to create."
+        }
+      }
+    },
+    "apiDevice": {
+      "type": "object",
+      "properties": {
+        "dev_eui": {
+          "type": "string",
+          "description": "Device EUI (HEX encoded)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the device (if left blank, it will be set to the DevEUI)."
+        },
+        "application_id": {
+          "type": "string",
+          "format": "int64",
+          "description": "ID of the application to which the device must be added."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the device."
+        },
+        "device_profile_id": {
+          "type": "string",
+          "description": "DeviceProfileID attached to the device."
+        },
+        "skip_f_cnt_check": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Skip frame-counter checks (this is insecure, but could be helpful for debugging)."
+        },
+        "reference_altitude": {
+          "type": "number",
+          "format": "double",
+          "description": "Reference altitude.\nWhen using geolocation, this altitude will be used as a reference\n(when supported by the geolocation-server) to increase geolocation\naccuracy."
+        }
+      }
+    },
+    "apiDeviceActivation": {
+      "type": "object",
+      "properties": {
+        "dev_eui": {
+          "type": "string",
+          "description": "Device EUI (HEX encoded)."
+        },
+        "dev_addr": {
+          "type": "string",
+          "description": "Device address (HEX encoded)."
+        },
+        "app_s_key": {
+          "type": "string",
+          "description": "Application session key (HEX encoded)."
+        },
+        "nwk_s_enc_key": {
+          "type": "string",
+          "description": "Network session encryption key (HEX encoded)."
+        },
+        "s_nwk_s_int_key": {
+          "type": "string",
+          "description": "Serving network session integrity key (HEX encoded)."
+        },
+        "f_nwk_s_int_key": {
+          "type": "string",
+          "description": "Forwarding network session integrity key (HEX encoded)."
+        },
+        "f_cnt_up": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Uplink frame-counter."
+        },
+        "n_f_cnt_down": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Downlink network frame-counter."
+        },
+        "a_f_cnt_down": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Downlink application frame-counter."
+        }
+      }
+    },
+    "apiDeviceKeys": {
+      "type": "object",
+      "properties": {
+        "dev_eui": {
+          "type": "string",
+          "description": "Device EUI (HEX encoded)."
+        },
+        "nwk_key": {
+          "type": "string",
+          "title": "Network root key (HEX encoded).\nNote: For LoRaWAN 1.0.x, use this field for the LoRaWAN 1.0.x 'AppKey`!"
+        },
+        "app_key": {
+          "type": "string",
+          "title": "Application root key (HEX encoded).\nNote: This field only needs to be set for LoRaWAN 1.1.x devices!"
+        }
+      }
+    },
+    "apiDeviceListItem": {
+      "type": "object",
+      "properties": {
+        "dev_eui": {
+          "type": "string",
+          "description": "Device EUI (HEX encoded)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the device."
+        },
+        "application_id": {
+          "type": "string",
+          "format": "int64",
+          "description": "Application ID."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the device."
+        },
+        "device_profile_id": {
+          "type": "string",
+          "description": "Device-profile ID attached to the device."
+        },
+        "device_profile_name": {
+          "type": "string",
+          "description": "Device-profile name."
+        },
+        "device_status_battery": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The device battery status (deprecated, use device_status_battery_level).\n0:      The end-device is connected to an external power source\n1..254: The battery level, 1 being at minimum and 254 being at maximum\n255:    The end-device was not able to measure the battery level\n256:    The device-status is not available."
+        },
+        "device_status_margin": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The device margin status\n-32..32: The demodulation SNR ration in dB\n256:     The device-status is not available."
+        },
+        "device_status_external_power_source": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Device is connected to an external power source."
+        },
+        "device_status_battery_level_unavailable": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Device battery status is unavailable."
+        },
+        "device_status_battery_level": {
+          "type": "number",
+          "format": "float",
+          "description": "Device battery level as a percentage."
+        },
+        "last_seen_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The last time the application-server received any data from the device,\nor an empty string when the device never sent any data."
+        }
+      }
+    },
+    "apiDownlinkFrameLog": {
+      "type": "object",
+      "properties": {
+        "tx_info": {
+          "$ref": "#/definitions/apiDownlinkTXInfo",
+          "description": "TX information of the downlink."
+        },
+        "phy_payload_json": {
+          "type": "string",
+          "description": "LoRaWAN PHYPayload."
+        }
+      }
+    },
+    "apiDownlinkTXInfo": {
+      "type": "object",
+      "properties": {
+        "gateway_id": {
+          "type": "string",
+          "description": "Gateway ID."
+        },
+        "immediately": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Frame must be sent immediately."
+        },
+        "time_since_gps_epoch": {
+          "$ref": "#/definitions/protobufDuration",
+          "description": "Emit frame at the given time since GPS epoch."
+        },
+        "timestamp": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Emit the frame at the given gateway internal timestamp."
+        },
+        "frequency": {
+          "type": "integer",
+          "format": "int64",
+          "description": "TX frequency (in Hz)."
+        },
+        "power": {
+          "type": "integer",
+          "format": "int32",
+          "description": "TX power (in dBm)."
+        },
+        "modulation": {
+          "$ref": "#/definitions/commonModulation",
+          "description": "Modulation."
+        },
+        "lora_modulation_info": {
+          "$ref": "#/definitions/gwLoRaModulationInfo",
+          "description": "LoRa modulation information."
+        },
+        "fsk_modulation_info": {
+          "$ref": "#/definitions/gwFSKModulationInfo",
+          "description": "FSK modulation information."
+        },
+        "board": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The board identifier for emitting the frame."
+        },
+        "antenna": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The antenna identifier for emitting the frame."
+        }
+      },
+      "description": "Same comment as above applies to this message."
+    },
+    "apiEncryptedFineTimestamp": {
+      "type": "object",
+      "properties": {
+        "aes_key_index": {
+          "type": "integer",
+          "format": "int64",
+          "description": "AES key index used for encrypting the fine timestamp."
+        },
+        "encrypted_ns": {
+          "type": "string",
+          "format": "byte",
+          "description": "Encrypted 'main' fine-timestamp (ns precision part of the timestamp)."
+        },
+        "fpga_id": {
+          "type": "string",
+          "description": "FPGA ID."
+        }
+      },
+      "description": "this s a copy of gw.EncryptedFineTimestamp which the only change that\nthe fpga_id is of type string so that it can be returned in HEX format\ninstead of base64."
+    },
+    "apiGetDeviceActivationResponse": {
+      "type": "object",
+      "properties": {
+        "device_activation": {
+          "$ref": "#/definitions/apiDeviceActivation",
+          "description": "Device-activation object."
+        }
+      }
+    },
+    "apiGetDeviceKeysResponse": {
+      "type": "object",
+      "properties": {
+        "device_keys": {
+          "$ref": "#/definitions/apiDeviceKeys",
+          "description": "Device-key object."
+        }
+      }
+    },
+    "apiGetDeviceResponse": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "$ref": "#/definitions/apiDevice",
+          "description": "Device object."
+        },
+        "last_seen_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last seen timestamp."
+        },
+        "device_status_battery": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The device battery status\n0:      The end-device is connected to an external power source\n1..254: The battery level, 1 being at minimum and 254 being at maximum\n255:    The end-device was not able to measure the battery level\n256:    The device-status is not available."
+        },
+        "device_status_margin": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The device margin status\n-32..32: The demodulation SNR ration in dB\n256:     The device-status is not available."
+        },
+        "location": {
+          "$ref": "#/definitions/commonLocation",
+          "description": "Device location.\nThis will set when the network-server was able to resolve the location\nusing the geolocation-server."
+        }
+      }
+    },
+    "apiGetRandomDevAddrResponse": {
+      "type": "object",
+      "properties": {
+        "dev_addr": {
+          "type": "string",
+          "description": "Device address (HEX encoded)."
+        }
+      }
+    },
+    "apiListDeviceResponse": {
+      "type": "object",
+      "properties": {
+        "total_count": {
+          "type": "string",
+          "format": "int64",
+          "description": "Total number of devices available within the result-set."
+        },
+        "result": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiDeviceListItem"
+          },
+          "description": "Devices within this result-set."
+        }
+      }
+    },
+    "apiStreamDeviceEventLogsResponse": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The event type."
+        },
+        "payload_json": {
+          "type": "string",
+          "description": "The event payload in JSON encoding."
+        }
+      }
+    },
+    "apiStreamDeviceFrameLogsResponse": {
+      "type": "object",
+      "properties": {
+        "uplink_frame": {
+          "$ref": "#/definitions/apiUplinkFrameLog",
+          "description": "Contains an uplink frame."
+        },
+        "downlink_frame": {
+          "$ref": "#/definitions/apiDownlinkFrameLog",
+          "description": "Contains a downlink frame."
+        }
+      }
+    },
+    "apiUpdateDeviceKeysRequest": {
+      "type": "object",
+      "properties": {
+        "device_keys": {
+          "$ref": "#/definitions/apiDeviceKeys",
+          "description": "Device-keys object to update."
+        }
+      }
+    },
+    "apiUpdateDeviceRequest": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "$ref": "#/definitions/apiDevice",
+          "description": "Device object to update."
+        }
+      }
+    },
+    "apiUplinkFrameLog": {
+      "type": "object",
+      "properties": {
+        "tx_info": {
+          "$ref": "#/definitions/gwUplinkTXInfo",
+          "description": "TX information of the uplink."
+        },
+        "rx_info": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiUplinkRXInfo"
+          },
+          "description": "RX information of the uplink."
+        },
+        "phy_payload_json": {
+          "type": "string",
+          "description": "LoRaWAN PHYPayload."
+        }
+      }
+    },
+    "apiUplinkRXInfo": {
+      "type": "object",
+      "properties": {
+        "gateway_id": {
+          "type": "string",
+          "description": "Gateway ID."
+        },
+        "time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "RX time (only set when the gateway has a GPS module)."
+        },
+        "time_since_gps_epoch": {
+          "$ref": "#/definitions/protobufDuration",
+          "description": "RX time since GPS epoch (only set when the gateway has a GPS module)."
+        },
+        "timestamp": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Gateway internal timestamp."
+        },
+        "rssi": {
+          "type": "integer",
+          "format": "int32",
+          "description": "RSSI."
+        },
+        "lora_snr": {
+          "type": "number",
+          "format": "double",
+          "description": "LoRa SNR."
+        },
+        "channel": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Channel."
+        },
+        "rf_chain": {
+          "type": "integer",
+          "format": "int64",
+          "description": "RF Chain."
+        },
+        "board": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Board."
+        },
+        "antenna": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Antenna."
+        },
+        "location": {
+          "$ref": "#/definitions/commonLocation",
+          "description": "Location."
+        },
+        "fine_timestamp_type": {
+          "$ref": "#/definitions/gwFineTimestampType",
+          "description": "Fine-timestamp type."
+        },
+        "encrypted_fine_timestamp": {
+          "$ref": "#/definitions/apiEncryptedFineTimestamp",
+          "description": "Encrypted fine-timestamp data."
+        },
+        "plain_fine_timestamp": {
+          "$ref": "#/definitions/gwPlainFineTimestamp",
+          "description": "Plain fine-timestamp data."
+        }
+      },
+      "description": "This is a copy of gw.UplinkRXInfo with the only change that the\ngateway_id is of type string so that we can return it as HEX encoded\ninstead of base64."
+    },
+    "commonLocation": {
+      "type": "object",
+      "properties": {
+        "latitude": {
+          "type": "number",
+          "format": "double",
+          "description": "Latitude."
+        },
+        "longitude": {
+          "type": "number",
+          "format": "double",
+          "description": "Longitude."
+        },
+        "altitude": {
+          "type": "number",
+          "format": "double",
+          "description": "Altitude."
+        },
+        "source": {
+          "$ref": "#/definitions/commonLocationSource",
+          "description": "Location source."
+        },
+        "accuracy": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Accuracy (in meters)."
+        }
+      }
+    },
+    "commonLocationSource": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "GPS",
+        "CONFIG",
+        "GEO_RESOLVER"
+      ],
+      "default": "UNKNOWN",
+      "description": " - UNKNOWN: Unknown.\n - GPS: GPS.\n - CONFIG: Manually configured.\n - GEO_RESOLVER: Geo resolver."
+    },
+    "commonModulation": {
+      "type": "string",
+      "enum": [
+        "LORA",
+        "FSK"
+      ],
+      "default": "LORA",
+      "title": "- LORA: LoRa\n - FSK: FSK"
+    },
+    "gwFSKModulationInfo": {
+      "type": "object",
+      "properties": {
+        "bandwidth": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Bandwidth."
+        },
+        "bitrate": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Bitrate."
+        }
+      }
+    },
+    "gwFineTimestampType": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "ENCRYPTED",
+        "PLAIN"
+      ],
+      "default": "NONE",
+      "description": " - NONE: No fine-timestamp available.\n - ENCRYPTED: Encrypted fine-timestamp.\n - PLAIN: Plain fine-timestamp."
+    },
+    "gwLoRaModulationInfo": {
+      "type": "object",
+      "properties": {
+        "bandwidth": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Bandwidth."
+        },
+        "spreading_factor": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Speading-factor."
+        },
+        "code_rate": {
+          "type": "string",
+          "description": "Code-rate."
+        },
+        "polarization_inversion": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Polarization inversion."
+        }
+      }
+    },
+    "gwPlainFineTimestamp": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Full timestamp."
+        }
+      }
+    },
+    "gwUplinkTXInfo": {
+      "type": "object",
+      "properties": {
+        "frequency": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Frequency (Hz)."
+        },
+        "modulation": {
+          "$ref": "#/definitions/commonModulation",
+          "description": "Modulation."
+        },
+        "lora_modulation_info": {
+          "$ref": "#/definitions/gwLoRaModulationInfo",
+          "description": "LoRa modulation information."
+        },
+        "fsk_modulation_info": {
+          "$ref": "#/definitions/gwFSKModulationInfo",
+          "description": "FSK modulation information."
+        }
+      }
+    },
+    "protobufDuration": {
+      "type": "object",
+      "properties": {
+        "seconds": {
+          "type": "string",
+          "format": "int64",
+          "title": "Signed seconds of the span of time. Must be from -315,576,000,000\nto +315,576,000,000 inclusive. Note: these bounds are computed from:\n60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years"
+        },
+        "nanos": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Signed fractions of a second at nanosecond resolution of the span\nof time. Durations less than one second are represented with a 0\n`seconds` field and a positive or negative `nanos` field. For durations\nof one second or more, a non-zero value for the `nanos` field must be\nof the same sign as the `seconds` field. Must be from -999,999,999\nto +999,999,999 inclusive."
+        }
+      },
+      "description": "A Duration represents a signed, fixed-length span of time represented\nas a count of seconds and fractions of seconds at nanosecond\nresolution. It is independent of any calendar and concepts like \"day\"\nor \"month\". It is related to Timestamp in that the difference between\ntwo Timestamp values is a Duration and it can be added or subtracted\nfrom a Timestamp. Range is approximately +-10,000 years.\n\n# Examples\n\nExample 1: Compute Duration from two Timestamps in pseudo code.\n\n    Timestamp start = ...;\n    Timestamp end = ...;\n    Duration duration = ...;\n\n    duration.seconds = end.seconds - start.seconds;\n    duration.nanos = end.nanos - start.nanos;\n\n    if (duration.seconds \u003c 0 \u0026\u0026 duration.nanos \u003e 0) {\n      duration.seconds += 1;\n      duration.nanos -= 1000000000;\n    } else if (durations.seconds \u003e 0 \u0026\u0026 duration.nanos \u003c 0) {\n      duration.seconds -= 1;\n      duration.nanos += 1000000000;\n    }\n\nExample 2: Compute Timestamp from Timestamp + Duration in pseudo code.\n\n    Timestamp start = ...;\n    Duration duration = ...;\n    Timestamp end = ...;\n\n    end.seconds = start.seconds + duration.seconds;\n    end.nanos = start.nanos + duration.nanos;\n\n    if (end.nanos \u003c 0) {\n      end.seconds -= 1;\n      end.nanos += 1000000000;\n    } else if (end.nanos \u003e= 1000000000) {\n      end.seconds += 1;\n      end.nanos -= 1000000000;\n    }\n\nExample 3: Compute Duration from datetime.timedelta in Python.\n\n    td = datetime.timedelta(days=3, minutes=10)\n    duration = Duration()\n    duration.FromTimedelta(td)\n\n# JSON Mapping\n\nIn JSON format, the Duration type is encoded as a string rather than an\nobject, where the string ends in the suffix \"s\" (indicating seconds) and\nis preceded by the number of seconds, with nanoseconds expressed as\nfractional seconds. For example, 3 seconds with 0 nanoseconds should be\nencoded in JSON format as \"3s\", while 3 seconds and 1 nanosecond should\nbe expressed in JSON format as \"3.000000001s\", and 3 seconds and 1\nmicrosecond should be expressed in JSON format as \"3.000001s\"."
+    },
+    "protobufEmpty": {
+      "type": "object",
+      "description": "service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }\n\nThe JSON representation for `Empty` is empty JSON object `{}`.",
+      "title": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:"
+    }
+  }
+}

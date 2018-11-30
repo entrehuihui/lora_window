@@ -1,0 +1,395 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "serviceProfile.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/service-profiles": {
+      "get": {
+        "summary": "List lists the available service-profiles.",
+        "operationId": "List",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/apiListServiceProfileResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "description": "Max number of items to return.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "offset",
+            "description": "Offset in the result-set (for pagination).",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "organization_id",
+            "description": "Organization id to filter on.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "ServiceProfileService"
+        ]
+      },
+      "post": {
+        "summary": "Create creates the given service-profile.",
+        "operationId": "Create",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/apiCreateServiceProfileResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiCreateServiceProfileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ServiceProfileService"
+        ]
+      }
+    },
+    "/api/service-profiles/{id}": {
+      "get": {
+        "summary": "Get returns the service-profile matching the given id.",
+        "operationId": "Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/apiGetServiceProfileResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ServiceProfileService"
+        ]
+      },
+      "delete": {
+        "summary": "Delete deletes the service-profile matching the given id.",
+        "operationId": "Delete",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ServiceProfileService"
+        ]
+      }
+    },
+    "/api/service-profiles/{service_profile.id}": {
+      "put": {
+        "summary": "Update updates the given serviceprofile.",
+        "operationId": "Update",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "service_profile.id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiUpdateServiceProfileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ServiceProfileService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "apiCreateServiceProfileRequest": {
+      "type": "object",
+      "properties": {
+        "service_profile": {
+          "$ref": "#/definitions/apiServiceProfile",
+          "description": "Service-profile object to create."
+        }
+      }
+    },
+    "apiCreateServiceProfileResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Service-profile ID (UUID string)."
+        }
+      }
+    },
+    "apiGetServiceProfileResponse": {
+      "type": "object",
+      "properties": {
+        "service_profile": {
+          "$ref": "#/definitions/apiServiceProfile",
+          "description": "Service-profile object."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Created at timestamp."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp."
+        }
+      }
+    },
+    "apiListServiceProfileResponse": {
+      "type": "object",
+      "properties": {
+        "total_count": {
+          "type": "string",
+          "format": "int64",
+          "description": "Total number of service-profiles."
+        },
+        "result": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiServiceProfileListItem"
+          }
+        }
+      }
+    },
+    "apiRatePolicy": {
+      "type": "string",
+      "enum": [
+        "DROP",
+        "MARK"
+      ],
+      "default": "DROP",
+      "title": "- DROP: Drop\n - MARK: Mark"
+    },
+    "apiServiceProfile": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Service-profile ID (UUID string).\nThis will be automatically set on create."
+        },
+        "name": {
+          "type": "string",
+          "description": "Service-profile name."
+        },
+        "organization_id": {
+          "type": "string",
+          "format": "int64",
+          "description": "Organization ID to which the service-profile is assigned."
+        },
+        "network_server_id": {
+          "type": "string",
+          "format": "int64",
+          "description": "Network-server ID on which the service-profile is provisioned."
+        },
+        "ul_rate": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Token bucket filling rate, including ACKs (packet/h)."
+        },
+        "ul_bucket_size": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Token bucket burst size."
+        },
+        "ul_rate_policy": {
+          "$ref": "#/definitions/apiRatePolicy",
+          "description": "Drop or mark when exceeding ULRate."
+        },
+        "dl_rate": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Token bucket filling rate, including ACKs (packet/h)."
+        },
+        "dl_bucket_size": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Token bucket burst size."
+        },
+        "dl_rate_policy": {
+          "$ref": "#/definitions/apiRatePolicy",
+          "description": "Drop or mark when exceeding DLRate."
+        },
+        "add_gw_metadata": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "GW metadata (RSSI, SNR, GW geoloc., etc.) are added to the packet sent to AS."
+        },
+        "dev_status_req_freq": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Frequency to initiate an End-Device status request (request/day)."
+        },
+        "report_dev_status_battery": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Report End-Device battery level to AS."
+        },
+        "report_dev_status_margin": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Report End-Device margin to AS."
+        },
+        "dr_min": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Minimum allowed data rate. Used for ADR."
+        },
+        "dr_max": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Maximum allowed data rate. Used for ADR."
+        },
+        "channel_mask": {
+          "type": "string",
+          "format": "byte",
+          "description": "Channel mask. sNS does not have to obey (i.e., informative)."
+        },
+        "pr_allowed": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Passive Roaming allowed."
+        },
+        "hr_allowed": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Handover Roaming allowed."
+        },
+        "ra_allowed": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Roaming Activation allowed."
+        },
+        "nwk_geo_loc": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Enable network geolocation service."
+        },
+        "target_per": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Target Packet Error Rate."
+        },
+        "min_gw_diversity": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Minimum number of receiving GWs (informative)."
+        }
+      }
+    },
+    "apiServiceProfileListItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Service-profile ID (UUID string)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Service-profile name."
+        },
+        "organization_id": {
+          "type": "string",
+          "format": "int64",
+          "description": "Organization ID of the service-profile."
+        },
+        "network_server_id": {
+          "type": "string",
+          "format": "int64",
+          "description": "Network-server ID of the service-profile."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Created at timestamp."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp."
+        }
+      }
+    },
+    "apiUpdateServiceProfileRequest": {
+      "type": "object",
+      "properties": {
+        "service_profile": {
+          "$ref": "#/definitions/apiServiceProfile",
+          "description": "Service-profile object to update."
+        }
+      }
+    },
+    "protobufEmpty": {
+      "type": "object",
+      "description": "service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }\n\nThe JSON representation for `Empty` is empty JSON object `{}`.",
+      "title": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:"
+    }
+  }
+}

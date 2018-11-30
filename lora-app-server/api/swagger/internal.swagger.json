@@ -1,0 +1,319 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "internal.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/internal/branding": {
+      "get": {
+        "summary": "Get the branding for the UI",
+        "operationId": "Branding",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/apiBrandingResponse"
+            }
+          }
+        },
+        "tags": [
+          "InternalService"
+        ]
+      }
+    },
+    "/api/internal/login": {
+      "post": {
+        "summary": "Log in a user",
+        "operationId": "Login",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/apiLoginResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiLoginRequest"
+            }
+          }
+        ],
+        "tags": [
+          "InternalService"
+        ]
+      }
+    },
+    "/api/internal/profile": {
+      "get": {
+        "summary": "Get the current user's profile",
+        "operationId": "Profile",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/apiProfileResponse"
+            }
+          }
+        },
+        "tags": [
+          "InternalService"
+        ]
+      }
+    },
+    "/api/internal/search": {
+      "get": {
+        "summary": "Perform a global search.",
+        "operationId": "GlobalSearch",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/apiGlobalSearchResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "search",
+            "description": "Search query.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "description": "Max number of results to return.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "offset",
+            "description": "Offset offset of the result-set (for pagination).",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "InternalService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "apiBrandingResponse": {
+      "type": "object",
+      "properties": {
+        "logo": {
+          "type": "string",
+          "description": "Logo html."
+        },
+        "registration": {
+          "type": "string",
+          "description": "Registration html."
+        },
+        "footer": {
+          "type": "string",
+          "description": "Footer html."
+        }
+      }
+    },
+    "apiGlobalSearchResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiGlobalSearchResult"
+          }
+        }
+      }
+    },
+    "apiGlobalSearchResult": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "Record kind."
+        },
+        "score": {
+          "type": "number",
+          "format": "float",
+          "description": "Search score."
+        },
+        "organization_id": {
+          "type": "string",
+          "format": "int64",
+          "description": "Organization id."
+        },
+        "organization_name": {
+          "type": "string",
+          "description": "Organization name."
+        },
+        "application_id": {
+          "type": "string",
+          "format": "int64",
+          "description": "Application id."
+        },
+        "application_name": {
+          "type": "string",
+          "description": "Application name."
+        },
+        "device_dev_eui": {
+          "type": "string",
+          "description": "Device DevEUI (hex encoded)."
+        },
+        "device_name": {
+          "type": "string",
+          "description": "Device name."
+        },
+        "gateway_mac": {
+          "type": "string",
+          "description": "Gateway MAC (hex encoded)."
+        },
+        "gateway_name": {
+          "type": "string",
+          "description": "Gateway name."
+        }
+      }
+    },
+    "apiLoginRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "description": "Username of the user."
+        },
+        "password": {
+          "type": "string",
+          "description": "Password of the user."
+        }
+      }
+    },
+    "apiLoginResponse": {
+      "type": "object",
+      "properties": {
+        "jwt": {
+          "type": "string",
+          "description": "The JWT tag to be used to access lora-app-server interfaces."
+        }
+      }
+    },
+    "apiOrganizationLink": {
+      "type": "object",
+      "properties": {
+        "organization_id": {
+          "type": "string",
+          "format": "int64",
+          "description": "Organization ID."
+        },
+        "organization_name": {
+          "type": "string",
+          "description": "Organization name."
+        },
+        "is_admin": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "User is admin within the context of this organization."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Created at timestamp."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp."
+        }
+      },
+      "description": "Defines an organization to which an user is associated."
+    },
+    "apiProfileResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/apiUser",
+          "description": "User object."
+        },
+        "organizations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiOrganizationLink"
+          },
+          "description": "Organizations to which the user is associated."
+        },
+        "settings": {
+          "$ref": "#/definitions/apiProfileSettings",
+          "description": "Profile settings."
+        }
+      }
+    },
+    "apiProfileSettings": {
+      "type": "object",
+      "properties": {
+        "disable_assign_existing_users": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Existing users in the system can not be assigned to organizations and\napplication and can not be listed by non global admin users."
+        }
+      }
+    },
+    "apiUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64",
+          "description": "User ID.\nWill be set automatically on create."
+        },
+        "username": {
+          "type": "string",
+          "description": "Username of the user."
+        },
+        "session_ttl": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The session timeout, in minutes."
+        },
+        "is_admin": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Set to true to make the user a global administrator."
+        },
+        "is_active": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Set to false to disable the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "E-mail of the user."
+        },
+        "note": {
+          "type": "string",
+          "description": "Optional note to store with the user."
+        }
+      }
+    }
+  }
+}

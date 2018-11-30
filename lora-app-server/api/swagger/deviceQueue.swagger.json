@@ -1,0 +1,170 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "deviceQueue.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/devices/{dev_eui}/queue": {
+      "get": {
+        "summary": "List lists the items in the device-queue.",
+        "operationId": "List",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/apiListDeviceQueueItemsResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "dev_eui",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DeviceQueueService"
+        ]
+      },
+      "delete": {
+        "summary": "Flush flushes the downlink device-queue.",
+        "operationId": "Flush",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "dev_eui",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DeviceQueueService"
+        ]
+      }
+    },
+    "/api/devices/{device_queue_item.dev_eui}/queue": {
+      "post": {
+        "summary": "Enqueue adds the given item to the device-queue.",
+        "operationId": "Enqueue",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/apiEnqueueDeviceQueueItemResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "device_queue_item.dev_eui",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiEnqueueDeviceQueueItemRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DeviceQueueService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "apiDeviceQueueItem": {
+      "type": "object",
+      "properties": {
+        "dev_eui": {
+          "type": "string",
+          "description": "Device EUI (HEX encoded)."
+        },
+        "confirmed": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Set this to true when an acknowledgement from the device is required.\nPlease note that this must not be used to guarantee a delivery."
+        },
+        "f_cnt": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Downlink frame-counter.\nThis will be automatically set on enquue."
+        },
+        "f_port": {
+          "type": "integer",
+          "format": "int64",
+          "title": "FPort used (must be \u003e 0)"
+        },
+        "data": {
+          "type": "string",
+          "format": "byte",
+          "description": "Base64 encoded data.\nOr use the json_object field when an application codec has been configured."
+        },
+        "json_object": {
+          "type": "string",
+          "description": "JSON object (string).\nOnly use this when an application codec has been configured that can convert\nthis object into binary form."
+        }
+      }
+    },
+    "apiEnqueueDeviceQueueItemRequest": {
+      "type": "object",
+      "properties": {
+        "device_queue_item": {
+          "$ref": "#/definitions/apiDeviceQueueItem",
+          "description": "Queue-item object to enqueue."
+        }
+      }
+    },
+    "apiEnqueueDeviceQueueItemResponse": {
+      "type": "object",
+      "properties": {
+        "f_cnt": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Frame-counter for the enqueued payload."
+        }
+      }
+    },
+    "apiListDeviceQueueItemsResponse": {
+      "type": "object",
+      "properties": {
+        "device_queue_items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiDeviceQueueItem"
+          }
+        }
+      }
+    },
+    "protobufEmpty": {
+      "type": "object",
+      "description": "service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }\n\nThe JSON representation for `Empty` is empty JSON object `{}`.",
+      "title": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:"
+    }
+  }
+}
